@@ -3,7 +3,7 @@
 use utf8;
 use open qw(:std :utf8);
 use strict;
-use lib qw(/var/www/cgi-bin/teplo1/libs);
+use lib qw(/var/www/cgi-bin/libs);
 use DBI;
 use CGI qw(:standard);
 use CGI::Carp qw(fatalsToBrowser);
