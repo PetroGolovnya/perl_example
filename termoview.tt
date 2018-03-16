@@ -1,0 +1,117 @@
+[% INCLUDE header
+   title = 'Архивные показатели температуры воздуха'
+%]
+
+[% USE  date %]
+
+[% i = 0 %]
+
+<center>
+<b>Архивные (среднечасовые) данные температуры окружающего воздуха</b>
+<br>с <b>[% date_start %]</b> по <b>[% date_end %]</b>
+[% IF act != 'print' %]
+<table border=0 width=80%>
+    <tr><td align=left width=33%><a href="javascript:history.back(1)">Назад</a></td>
+    <td align=center width=33%><a href="/index.shtml">На главную</a></td>
+    <td align=right><a href="arxtermoview_new.cgi?date_start=[% date_start %]&date_end=[% date_end %]&act=print" target=_blank>Версия для печати</a></td></tr>
+</table>
+[% ELSE %]
+<p>
+[% END %]
+
+[% IF act != 'print' %]
+<table border=0 width=80% nowrap bgcolor=CCCCCC>
+[% ELSE %]
+<table border=0 width=100% nowrap bgcolor=CCCCCC>
+[% END %]
+    <tr bgcolor=EEEEEE align=center>
+    <td width=10% rowspan=3><b>Дата</b></td>
+    <td colspan=12><b>Часы</b></td>
+    <td width=10% rowspan=3><b>Средняя</b></td></tr>
+	<tr align=center bgcolor=EEEEEE>
+    [% WHILE i < 12 %]
+	    <td width="6%"><b>[% i|format('%.2d') %]</b></td>
+        [% i = i + 1 %]        
+    [% END %]
+	</tr>
+	<tr align=center bgcolor=EEEEEE>
+    [% WHILE i < 24 %]
+	    <td width="6%"><b>[% i|format('%.2d') %]</b></td>
+        [% i = i + 1 %]        
+    [% END %]
+	</tr>			
+	[% FOREACH key IN rows.keys.sort %] [%# осторожно, псевдокод %]
+	    [% i = 0%] [%# счетчик цикла, выводящего часовые значения %]
+		[% flag = 0%] [%# признак нарисованного среднего %]
+	    <tr bgcolor=FFFFFF align=center>	
+	    <td rowspan=2><b><font color=red>[% date.format(key, '%d-%m-%Y') %]</font></b></td>[%# ключ в формате UNIX time %]	
+		[% FOREACH row IN rows.$key %]
+		    [%- DEFAULT row.air = 0.0 -%]			
+			[% IF loop.index == 12 -%] [%# дорисовываем среднее в полных днях с i = 24 %]
+			    [% flag = 1%]
+			    [%- FOREACH avg IN avgs.$key -%]
+                    <td rowspan=2><font color=red><b>[%- avg.avg_air|format('%.02f') -%]</b></font></td>
+					</tr>
+                [% END -%]
+			    <tr bgcolor=FFFFFF align=center>
+			[% END %]
+		    <td>[%- row.air|format('%.01f') -%]</td>
+			[% i = i + 1 %]
+		[% END %]
+		[% IF i < 12 %] [%# когда первая строка за сегодня начинает заполняться, а вторая строка пустая, дорисовываем среднее и -- %]
+		    [% j = 0 %] 
+		    [% WHILE j < ( 12 - i) %] [%# палки в первую строку %]
+			    <td>--</td>
+				[% j = j + 1 %]
+			[% END %]
+			[%- FOREACH avg IN avgs.$key -%] [%# дорисовываем среднее в неполных днях %]
+                <td rowspan=2><font color=red><b>[%- avg.avg_air|format('%.02f') -%]</b></font></td>
+				</tr>
+            [% END -%]
+			<tr bgcolor=FFFFFF align=center>
+			[% j = 0 %]
+			[% WHILE j < 12 %] [%# палки во вторую строку %]
+			    <td>--</td>
+				[% j = j + 1 %]
+			[% END %]
+		[% END %]		
+		[% IF i >= 12 && i != 24%] [%# когда первая строка за сегодня заполнена и начинает заполняться вторая строка, дорисовываем среднее и -- %]
+		    [% IF flag == 0 %] 
+		        [%- FOREACH avg IN avgs.$key -%] [%# дорисовываем среднее в неполных днях %]
+                    <td rowspan=2><font color=red><b>[%- avg.avg_air|format('%.02f') -%]</b></font></td>
+				    </tr>
+                [% END -%]
+				<tr bgcolor=FFFFFF align=center>
+			[% END %]				
+			[% j = 0 %] 
+		    [% WHILE j < ( 24 - i) %] [%# палки во вторую строку %]
+			    <td>--</td>
+				[% j = j + 1 %]
+			[% END %]
+		[% END %]	        
+	    </tr>
+	<tr><td colspan=14></td></tr>	
+	[% END %]
+    <tr bgcolor=EEEEEE><td colspan=13><b><font color=red>Итого за период</font></b></td>
+	<td align=center><b><font color=red>[% period|format('%.02f') %]</font></b></d></tr>
+</table>
+[% IF act != 'print' %]
+<p><b>Выберите желаемый диапазон дат:</b>
+<table width=60% border=0 nowrap>
+    <tr align=center>
+	<td width=25%><a href="arxtermoview_new.cgi?date_start=[% yesterday %]&date_end=[% today %]">Вчера и сегодня</a></td>
+	<td><a href="arxtermoview_new.cgi?date_start=[% day_3 %]&date_end=[% yesterday %]">За 3 дня</a></td>
+	<td width=25%><a href="arxtermoview_new.cgi?date_start=[% day_7 %]&date_end=[% yesterday %]">За 7 дней</a></td>
+	<td width=25%><a href="arxtermoview_new.cgi?date_start=[% day_10 %]&date_end=[% yesterday %]">За 10 дней</a></td>
+	</tr>
+</table>
+<br><b>или произвольный <i>(дд-мм-гггг)</i>:</b>
+<form action="arxtermoview_new.cgi" method="post">
+    с <input name="date_start" value="[% date_start %]" size=10>
+    по <input name="date_end" value="[% date_end %]" size=10>
+    <p><input type="submit" value="Показать">
+    <input type="reset" value="Сброс">
+</form>
+[% END %]
+</center>
+[% INCLUDE footer %]
