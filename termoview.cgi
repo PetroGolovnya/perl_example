@@ -38,20 +38,20 @@ my %ds = ();
 my %avg = ();
 
 while ( Time::Piece->strptime($dt_start, "%d-%m-%Y") < Time::Piece->strptime($dt_end, "%d-%m-%Y") ) {        
-	my $date = Time::Piece->strptime($dt_start, "%d-%m-%Y") + (24 * 3600);
-	my $date = $date->strftime("%d-%m-%Y");	
+    my $date = Time::Piece->strptime($dt_start, "%d-%m-%Y") + (24 * 3600);
+    my $date = $date->strftime("%d-%m-%Y");	
 	    
     $sth = $dbh->prepare("set dateformat dmy; SELECT date, air from air where date >= '$dt_start' and date < '$date' order by date");
     $sth->execute();
     my $results = $sth->fetchall_arrayref(\{ 0 => 'date_p', 1 => 'air' });
-	$ds{Time::Piece->strptime($dt_start, "%d-%m-%Y")->strftime("%s")} = $results; # хеш с ключом в виде даты в формате UNIX time
+    $ds{Time::Piece->strptime($dt_start, "%d-%m-%Y")->strftime("%s")} = $results; # хеш с ключом в виде даты в формате UNIX time
 
-	$sth = $dbh->prepare("set dateformat dmy; SELECT AVG(air) as air from air where date >= '$dt_start' and date < '$date'");
+    $sth = $dbh->prepare("set dateformat dmy; SELECT AVG(air) as air from air where date >= '$dt_start' and date < '$date'");
     $sth->execute();
-	$results = $sth->fetchall_arrayref(\{ 0 => 'avg_air' });	
-	$avg{Time::Piece->strptime($dt_start, "%d-%m-%Y")->strftime("%s")} = $results; # хеш с ключом в виде даты в формате UNIX time
+    $results = $sth->fetchall_arrayref(\{ 0 => 'avg_air' });	
+    $avg{Time::Piece->strptime($dt_start, "%d-%m-%Y")->strftime("%s")} = $results; # хеш с ключом в виде даты в формате UNIX time
 		
-	$dt_start = $date;		
+    $dt_start = $date;		
 }
 
 $sth->finish();
@@ -60,7 +60,7 @@ $dbh->disconnect();
 my $file = 'termoview.tt';
 
 my $vars = {
-    'rows' => \%ds,
+        'rows' => \%ds,
 	'avgs' => \%avg,
 	'period' => $period,
 	'date_start' => $date_start,
