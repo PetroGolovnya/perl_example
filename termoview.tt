@@ -13,7 +13,7 @@
 <table border=0 width=80%>
     <tr><td align=left width=33%><a href="javascript:history.back(1)">Назад</a></td>
     <td align=center width=33%><a href="/index.shtml">На главную</a></td>
-    <td align=right><a href="arxtermoview_new.cgi?date_start=[% date_start %]&date_end=[% date_end %]&act=print" target=_blank>Версия для печати</a></td></tr>
+    <td align=right><a href="termoview.cgi?date_start=[% date_start %]&date_end=[% date_end %]&act=print" target=_blank>Версия для печати</a></td></tr>
 </table>
 [% ELSE %]
 <p>
@@ -99,14 +99,14 @@
 <p><b>Выберите желаемый диапазон дат:</b>
 <table width=60% border=0 nowrap>
     <tr align=center>
-	<td width=25%><a href="arxtermoview_new.cgi?date_start=[% yesterday %]&date_end=[% today %]">Вчера и сегодня</a></td>
-	<td><a href="arxtermoview_new.cgi?date_start=[% day_3 %]&date_end=[% yesterday %]">За 3 дня</a></td>
-	<td width=25%><a href="arxtermoview_new.cgi?date_start=[% day_7 %]&date_end=[% yesterday %]">За 7 дней</a></td>
-	<td width=25%><a href="arxtermoview_new.cgi?date_start=[% day_10 %]&date_end=[% yesterday %]">За 10 дней</a></td>
+	<td width=25%><a href="termoview.cgi?date_start=[% yesterday %]&date_end=[% today %]">Вчера и сегодня</a></td>
+	<td><a href="termoview.cgi?date_start=[% day_3 %]&date_end=[% yesterday %]">За 3 дня</a></td>
+	<td width=25%><a href="termoview.cgi?date_start=[% day_7 %]&date_end=[% yesterday %]">За 7 дней</a></td>
+	<td width=25%><a href="termoview.cgi?date_start=[% day_10 %]&date_end=[% yesterday %]">За 10 дней</a></td>
 	</tr>
 </table>
 <br><b>или произвольный <i>(дд-мм-гггг)</i>:</b>
-<form action="arxtermoview_new.cgi" method="post">
+<form action="termoview.cgi" method="post">
     с <input name="date_start" value="[% date_start %]" size=10>
     по <input name="date_end" value="[% date_end %]" size=10>
     <p><input type="submit" value="Показать">
