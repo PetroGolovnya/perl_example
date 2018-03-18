@@ -26,8 +26,8 @@ $dt_end = $dt_end->strftime("%d-%m-%Y");
 my $dt_start = $date_start;
 
 my $dbh = DBI->connect("dbi:ODBC:DSN=TEPLO", 'user', 'password') or die "Couldn't connect to database: " . DBI->errstr;
-my $sth = $dbh->prepare("set dateformat dmy; SELECT AVG(air) as air from air where date >= '$dt_start' and date < '$dt_end'");
-$sth->execute();
+my $sth = $dbh->prepare("set dateformat dmy; SELECT AVG(air) as air from air where date >= ? and date < ?");
+$sth->execute($dt_start, $dt_end);
 
 my $period;
 while(my @result = $sth->fetchrow()){
@@ -41,13 +41,13 @@ while ( Time::Piece->strptime($dt_start, "%d-%m-%Y") < Time::Piece->strptime($dt
     my $date = Time::Piece->strptime($dt_start, "%d-%m-%Y") + (24 * 3600);
     my $date = $date->strftime("%d-%m-%Y");	
 	    
-    $sth = $dbh->prepare("set dateformat dmy; SELECT date, air from air where date >= '$dt_start' and date < '$date' order by date");
-    $sth->execute();
+    $sth = $dbh->prepare("set dateformat dmy; SELECT date, air from air where date >= ? and date < ? order by date");
+    $sth->execute($dt_start, $date);
     my $results = $sth->fetchall_arrayref(\{ 0 => 'date_p', 1 => 'air' });
     $ds{Time::Piece->strptime($dt_start, "%d-%m-%Y")->strftime("%s")} = $results; # хеш с ключом в виде даты в формате UNIX time
 
-    $sth = $dbh->prepare("set dateformat dmy; SELECT AVG(air) as air from air where date >= '$dt_start' and date < '$date'");
-    $sth->execute();
+    $sth = $dbh->prepare("set dateformat dmy; SELECT AVG(air) as air from air where date >= ? and date < ?");
+    $sth->execute($dt_start, $date);
     $results = $sth->fetchall_arrayref(\{ 0 => 'avg_air' });	
     $avg{Time::Piece->strptime($dt_start, "%d-%m-%Y")->strftime("%s")} = $results; # хеш с ключом в виде даты в формате UNIX time
 		
