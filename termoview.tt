@@ -40,55 +40,20 @@
         [% i = i + 1 %]        
     [% END %]
 	</tr>			
-	[% FOREACH key IN rows.keys.sort %] [%# осторожно, псевдокод %]
-	    [% i = 0%] [%# счетчик цикла, выводящего часовые значения %]
-		[% flag = 0%] [%# признак нарисованного среднего %]
+	[% FOREACH key IN rows.keys.sort %] [%# осторожно, псевдокод %]	    
 	    <tr bgcolor=FFFFFF align=center>	
 	    <td rowspan=2><b><font color=red>[% date.format(key, '%d-%m-%Y') %]</font></b></td>[%# ключ в формате UNIX time %]	
 		[% FOREACH row IN rows.$key %]
-		    [%- DEFAULT row.air = 0.0 -%]			
-			[% IF loop.index == 12 -%] [%# дорисовываем среднее в полных днях с i = 24 %]
-			    [% flag = 1%]
+		    [%- DEFAULT row.air = '--' -%]			
+			[% IF loop.index == 12 -%]
 			    [%- FOREACH avg IN avgs.$key -%]
                     <td rowspan=2><font color=red><b>[%- avg.avg_air|format('%.02f') -%]</b></font></td>
 					</tr>
-                [% END -%]
+                            [% END -%]
 			    <tr bgcolor=FFFFFF align=center>
 			[% END %]
-		    <td>[%- row.air|format('%.01f') -%]</td>
-			[% i = i + 1 %]
-		[% END %]
-		[% IF i < 12 %] [%# когда первая строка за сегодня начинает заполняться, а вторая строка пустая, дорисовываем среднее и -- %]
-		    [% j = 0 %] 
-		    [% WHILE j < ( 12 - i) %] [%# палки в первую строку %]
-			    <td>--</td>
-				[% j = j + 1 %]
-			[% END %]
-			[%- FOREACH avg IN avgs.$key -%] [%# дорисовываем среднее в неполных днях %]
-                <td rowspan=2><font color=red><b>[%- avg.avg_air|format('%.02f') -%]</b></font></td>
-				</tr>
-            [% END -%]
-			<tr bgcolor=FFFFFF align=center>
-			[% j = 0 %]
-			[% WHILE j < 12 %] [%# палки во вторую строку %]
-			    <td>--</td>
-				[% j = j + 1 %]
-			[% END %]
+		    <td>[%- row.air -%]</td>			
 		[% END %]		
-		[% IF i >= 12 && i != 24%] [%# когда первая строка за сегодня заполнена и начинает заполняться вторая строка, дорисовываем среднее и -- %]
-		    [% IF flag == 0 %] 
-		        [%- FOREACH avg IN avgs.$key -%] [%# дорисовываем среднее в неполных днях %]
-                    <td rowspan=2><font color=red><b>[%- avg.avg_air|format('%.02f') -%]</b></font></td>
-				    </tr>
-                [% END -%]
-				<tr bgcolor=FFFFFF align=center>
-			[% END %]				
-			[% j = 0 %] 
-		    [% WHILE j < ( 24 - i) %] [%# палки во вторую строку %]
-			    <td>--</td>
-				[% j = j + 1 %]
-			[% END %]
-		[% END %]	        
 	    </tr>
 	<tr><td colspan=14></td></tr>	
 	[% END %]
