@@ -78,7 +78,7 @@ foreach my $key ( keys %ds ) {
 my $file = 'termoview.tt';
 
 my $vars = {
-        'rows' => \%ds,
+        'rows' => \%pack,
 	'avgs' => \%avg,
 	'period' => $period,
 	'date_start' => $date_start,
