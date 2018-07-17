@@ -98,6 +98,8 @@ my $template = Template->new({
     STRICT => 1,		
 });
 
+$| = 1;
+
 print "Content-type: text/html\n\n";
 $template->process($file, $vars)
     || die "Template process failed: ", $template->error(), "\n";
