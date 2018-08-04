@@ -43,12 +43,12 @@
 	[% FOREACH key IN rows.keys.sort %] [%# осторожно, псевдокод %]	    
 	    <tr bgcolor=FFFFFF align=center>	
 	    <td rowspan=2><b><font color=red>[% date.format(key, '%d-%m-%Y') %]</font></b></td>[%# ключ в формате UNIX time %]	
-		[% FOREACH row IN rows.$key %]
-		    [%- DEFAULT row.air = '--' -%]			
+		[% FOREACH row IN rows.$key %]		    			
 			[% IF loop.index == 12 -%]
 			    [%- FOREACH avg IN avgs.$key -%]
-                    <td rowspan=2><font color=red><b>[%- avg.avg_air|format('%.02f') -%]</b></font></td>
-					</tr>
+			        [%- DEFAULT avg.avg_air = '--' -%]
+                                <td rowspan=2><font color=red><b>[%- avg.avg_air -%]</b></font></td>
+				</tr>
                             [% END -%]
 			    <tr bgcolor=FFFFFF align=center>
 			[% END %]
