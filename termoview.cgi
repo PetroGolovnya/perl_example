@@ -46,7 +46,7 @@ while ( Time::Piece->strptime($dt_start, "%d-%m-%Y") < Time::Piece->strptime($dt
     my $results = $sth->fetchall_arrayref(\{ 0 => 'date_p', 1 => 'air' });
     $ds{Time::Piece->strptime($dt_start, "%d-%m-%Y")->strftime("%s")} = $results; # хеш с ключом в виде даты в формате UNIX time
 
-    $sth = $dbh->prepare("set dateformat dmy; SELECT AVG(air) as air from air where date >= ? and date < ?");
+    $sth = $dbh->prepare("set dateformat dmy; SELECT FORMAT(AVG(air), 'N2') as air from air where date >= ? and date < ?");
     $sth->execute($dt_start, $date);
     $results = $sth->fetchall_arrayref(\{ 0 => 'avg_air' });	
     $avg{Time::Piece->strptime($dt_start, "%d-%m-%Y")->strftime("%s")} = $results; # хеш с ключом в виде даты в формате UNIX time
