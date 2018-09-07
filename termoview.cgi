@@ -5,7 +5,7 @@ use open qw(:std :utf8);
 use strict;
 use lib qw(/var/www/cgi-bin/libs);
 use DBI;
-use CGI qw(:standard);
+use CGI qw(:standard -utf8);
 use CGI::Carp qw(fatalsToBrowser);
 use Template;
 use Time::Piece;
